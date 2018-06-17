@@ -37,11 +37,11 @@ static uint32_t last_clk = 2U;
 
 volatile uint32_t  AD7021_control_word;
 
-uint32_t           ADF7021_RX_REG0;
-uint32_t           ADF7021_TX_REG0;
-uint32_t           ADF7021_REG1;
-uint32_t           div2;
-uint32_t           f_div;
+uint32_t ADF7021_RX_REG0;
+uint32_t ADF7021_TX_REG0;
+uint32_t ADF7021_REG1;
+uint32_t div2;
+uint32_t f_div;
 
 static void Send_AD7021_control_shift()
 {
@@ -234,24 +234,24 @@ void CIO::ifConf()
   ADF7021_TX_REG0 |= (uint32_t) m_TX_N_divider << 19;   // frequency;
   ADF7021_TX_REG0 |= (uint32_t) m_TX_F_divider << 4;    // frequency;
 
-  // Dev: 1200 Hz, symb rate = 4800
+  // POCSAG, deviation: 4500 Hz, symb rate = 1200
   ADF7021_REG3 = ADF7021_REG3_POCSAG;
   ADF7021_REG10 = ADF7021_REG10_POCSAG;
 
-  // K=32
-  ADF7021_REG4  = (uint32_t) 0b0100                    << 0;   // register 4
-  ADF7021_REG4 |= (uint32_t) 0b001                     << 4;   // mode, GMSK
-  ADF7021_REG4 |= (uint32_t) 0b1                       << 7;
-  ADF7021_REG4 |= (uint32_t) 0b10                      << 8;
+  ADF7021_REG4  = (uint32_t) 0b0100                     << 0;   // register 4
+  ADF7021_REG4 |= (uint32_t) 0b001                      << 4;   // demod mode, 2FSK
+  ADF7021_REG4 |= (uint32_t) 0b1                        << 7;
+  ADF7021_REG4 |= (uint32_t) 0b10                       << 8;
   ADF7021_REG4 |= (uint32_t) ADF7021_DISC_BW_POCSAG     << 10;  // Disc BW
   ADF7021_REG4 |= (uint32_t) ADF7021_POST_BW_POCSAG     << 20;  // Post dem BW
-  ADF7021_REG4 |= (uint32_t) 0b00                      << 30;  // IF filter (12.5 kHz)
+  ADF7021_REG4 |= (uint32_t) 0b10                       << 30;  // IF filter (25 kHz)
 
-  ADF7021_REG13 = (uint32_t) 0b1101                    << 0;   // register 13
+  // Register 13 not used with 2FSK
+  ADF7021_REG13 = (uint32_t) 0b1101                     << 0;   // register 13
 
-  ADF7021_REG2 = (uint32_t) 0b00                       << 28;  // clock normal
+  ADF7021_REG2  = (uint32_t) 0b00                       << 28;  // clock normal
   ADF7021_REG2 |= (uint32_t) (ADF7021_DEV_POCSAG / div2)<< 19;  // deviation
-  ADF7021_REG2 |= (uint32_t) 0b001                     << 4;   // modulation (GMSK)
+  ADF7021_REG2 |= (uint32_t) 0b000                      << 4;   // modulation (2FSK)
 
   // VCO/OSCILLATOR (REG1)
   AD7021_control_word = ADF7021_REG1;

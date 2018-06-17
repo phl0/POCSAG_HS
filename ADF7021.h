@@ -48,7 +48,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #if defined(ADF7021_14_7456)
 
 // R = 4
-// DEMOD_CLK = 2.4576 MHz (POCSAG)
+// DEMOD_CLK = 7.3728 MHz (POCSAG)
 #define ADF7021_PFD              3686400.0
 
 // PLL (REG 01)
@@ -58,16 +58,16 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG1_UHF2        0x00535041
 
 // Deviation of modulator (REG 02)
-#define ADF7021_DEV_POCSAG        43U
+#define ADF7021_DEV_POCSAG       160U
 
 // TX/RX CLOCK register (REG 03)
-#define ADF7021_REG3_POCSAG       0x2A4C4193
+#define ADF7021_REG3_POCSAG      0x2A4F0093
 
 // Discriminator bandwith, demodulator (REG 04)
-#define ADF7021_DISC_BW_POCSAG    522U // K=85
+#define ADF7021_DISC_BW_POCSAG   406U // K=22
 
 // Post demodulator bandwith (REG 04)
-#define ADF7021_POST_BW_POCSAG    10U
+#define ADF7021_POST_BW_POCSAG   1U
 
 // IF filter (REG 05)
 #define ADF7021_REG5             0x000024F5
@@ -76,13 +76,13 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG6             0x05070E16
 
 // AFC configuration (REG 10)
-#define ADF7021_REG10_POCSAG      0x0C96473A
+#define ADF7021_REG10_POCSAG     0x1496473A
 
 /****** Support for 12.2880 MHz TCXO ******/
 #elif defined(ADF7021_12_2880)
 
 // R = 2
-// DEMOD_CLK = 2.4576 MHz (POCSAG)
+// DEMOD_CLK = 6.1440 MHz (POCSAG)
 #define ADF7021_PFD              6144000.0
 
 // PLL (REG 01)
@@ -92,16 +92,16 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG1_UHF2        0x00535021
 
 // Deviation of modulator (REG 02)
-#define ADF7021_DEV_POCSAG        26U
+#define ADF7021_DEV_POCSAG       96U
 
 // TX/RX CLOCK register (REG 03)
-#define ADF7021_REG3_POCSAG       0x29EC4153
+#define ADF7021_REG3_POCSAG      0x29EE8093
 
 // Discriminator bandwith, demodulator (REG 04)
-#define ADF7021_DISC_BW_POCSAG    522U // K=85
+#define ADF7021_DISC_BW_POCSAG   338U // K=22
 
 // Post demodulator bandwith (REG 04)
-#define ADF7021_POST_BW_POCSAG    10U
+#define ADF7021_POST_BW_POCSAG   1U
 
 // IF filter (REG 05)
 #define ADF7021_REG5             0x00001ED5
@@ -110,7 +110,7 @@ www.analog.com/media/en/technical-documentation/data-sheets/ADF7021.pdf
 #define ADF7021_REG6             0x0505EBB6
 
 // AFC (REG 10)
-#define ADF7021_REG10_POCSAG     0x0C96557A
+#define ADF7021_REG10_POCSAG     0x1496557A
 
 #endif
 
