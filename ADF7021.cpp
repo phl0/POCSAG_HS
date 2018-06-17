@@ -331,7 +331,6 @@ void CIO::ifConf()
 void CIO::interrupt()
 {
   uint8_t bit = 0U;
-  
   if (!m_started)
     return;
 

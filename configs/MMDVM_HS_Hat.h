@@ -43,7 +43,7 @@
 // POCSAG configuration
 #define FREQ_RX 434600000
 #define FREQ_TX 434600000
-#define CAPCODE 995814
+#define RIC     123456
 
 // Send RSSI value:
 // #define SEND_RSSI_DATA
