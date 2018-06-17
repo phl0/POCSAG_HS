@@ -220,15 +220,6 @@ extern "C" {
   }
 #endif
 
-#if defined(DUPLEX)
-  void EXTI9_5_IRQHandler(void) {
-    if(EXTI_GetITStatus(EXTI_Line5)!=RESET) {
-      io.interrupt2();
-    EXTI_ClearITPendingBit(EXTI_Line5);
-    }
-  }
-#endif
-
 #endif
 }
 
@@ -248,9 +239,6 @@ void CIO::Init()
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
   EXTI_InitTypeDef EXTI_InitStructure;
-#if defined(DUPLEX)
-  EXTI_InitTypeDef EXTI_InitStructure2;
-#endif
 
   GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_StructInit(&GPIO_InitStruct);
@@ -292,20 +280,6 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Pin   = PIN_SLE;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
   GPIO_Init(PORT_SLE, &GPIO_InitStruct);
-  
-#if defined(DUPLEX)
-  // Pin SLE2
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStruct.GPIO_Pin   = PIN_SLE2;
-  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
-  GPIO_Init(PORT_SLE2, &GPIO_InitStruct);
-  
-  // Pin RXD2
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStruct.GPIO_Pin   = PIN_RXD2;
-  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-  GPIO_Init(PORT_RXD2, &GPIO_InitStruct);
-#endif
 
   // Pin CE
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
@@ -329,9 +303,6 @@ void CIO::Init()
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_Out_PP;
 #endif
   GPIO_Init(PORT_TXD, &GPIO_InitStruct);
-#if defined(DUPLEX)
-  GPIO_Init(PORT_TXD2, &GPIO_InitStruct);
-#endif
 
   // Pin TXRX_CLK
 #if !defined(BIDIR_DATA_PIN)
@@ -393,35 +364,17 @@ void CIO::Init()
   EXTI_InitStructure.EXTI_Line = EXTI_Line15;
 #endif
 
-#if defined(DUPLEX)
-  // Connect EXTI5 Line
-  GPIO_EXTILineConfig(PORT_TXD2_INT, PIN_TXD2_INT);
-  // Configure EXT5 line
-  EXTI_InitStructure2.EXTI_Line = EXTI_Line5;
-#endif
-
 #endif
 
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
-  
-#if defined(DUPLEX)
-  EXTI_InitStructure2.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure2.EXTI_Trigger = EXTI_Trigger_Rising;
-  EXTI_InitStructure2.EXTI_LineCmd = ENABLE;
-  EXTI_Init(&EXTI_InitStructure2);
-#endif
 }
 
 void CIO::startInt()
 {
   NVIC_InitTypeDef NVIC_InitStructure;
-  
-#if defined(DUPLEX)
-  NVIC_InitTypeDef NVIC_InitStructure2;
-#endif
 
 #if defined(PI_HAT_7021_REV_02)
 
@@ -437,23 +390,12 @@ void CIO::startInt()
   NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
 #endif
 
-#if defined(DUPLEX)
-  NVIC_InitStructure2.NVIC_IRQChannel = EXTI9_5_IRQn;
-#endif
-
 #endif
 
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 15;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-  
-#if defined(DUPLEX)
-  NVIC_InitStructure2.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure2.NVIC_IRQChannelSubPriority = 15;
-  NVIC_InitStructure2.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure2);
-#endif
 }
 
 #if defined(BIDIR_DATA_PIN)
@@ -493,18 +435,6 @@ void CIO::SLE_pin(bool on)
 {
   GPIO_WriteBit(PORT_SLE, PIN_SLE, on ? Bit_SET : Bit_RESET);
 }
-
-#if defined(DUPLEX)
-void CIO::SLE2_pin(bool on)
-{
-  GPIO_WriteBit(PORT_SLE2, PIN_SLE2, on ? Bit_SET : Bit_RESET);
-}
-
-bool CIO::RXD2_pin()
-{
-  return GPIO_ReadInputDataBit(PORT_RXD2, PIN_RXD2) == Bit_SET;
-}
-#endif
 
 void CIO::CE_pin(bool on)
 {
@@ -597,7 +527,6 @@ static inline void delay_ns() {
                  "nop          \n\t"
                  );
 }
-
 
 void CIO::dlybit(void)
 {

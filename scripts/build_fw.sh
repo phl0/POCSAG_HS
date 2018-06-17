@@ -38,12 +38,6 @@ make bl
 mv ~/MMDVM_HS/bin/mmdvm_f1bl.bin ~/MMDVM_HS/bin/zumspot_usb_fw.bin
 make clean
 
-# Building ZUMspot Duplex
-cp ~/MMDVM_HS/configs/ZUMspot_duplex.h ~/MMDVM_HS/Config.h
-make bl
-mv ~/MMDVM_HS/bin/mmdvm_f1bl.bin ~/MMDVM_HS/bin/zumspot_duplex_fw.bin
-make clean
-
 # Building MMDVM_HS_Hat
 cp ~/MMDVM_HS/configs/MMDVM_HS_Hat.h ~/MMDVM_HS/Config.h
 make
@@ -54,12 +48,6 @@ make clean
 cp ~/MMDVM_HS/configs/MMDVM_HS_Hat-12mhz.h ~/MMDVM_HS/Config.h
 make
 mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/mmdvm_hs_hat_fw-12mhz.bin
-make clean
-
-# Building MMDVM_HS_Dual_Hat
-cp ~/MMDVM_HS/configs/MMDVM_HS_Dual_Hat.h ~/MMDVM_HS/Config.h
-make
-mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/mmdvm_hs_dual_hat_fw.bin
 make clean
 
 # Building Nano hotSPOT
@@ -79,11 +67,3 @@ cp ~/MMDVM_HS/configs/generic_gpio.h ~/MMDVM_HS/Config.h
 make
 mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/generic_gpio_fw.bin
 make clean
-
-# Building Generic Duplex GPIO
-cp ~/MMDVM_HS/configs/generic_duplex_gpio.h ~/MMDVM_HS/Config.h
-make
-mv ~/MMDVM_HS/bin/mmdvm_f1.bin ~/MMDVM_HS/bin/generic_duplex_gpio_fw.bin
-make clean
-
-cp ~/MMDVM_HS/configs/ZUMspot_Libre.h ~/MMDVM_HS/Config.h
