@@ -32,7 +32,9 @@ CIO io;
 
 void setup()
 {
-
+  io.start();
+  io.setFreq(FREQ_RX, FREQ_TX, 255U);
+  io.ifConf();
 }
 
 void loop()
