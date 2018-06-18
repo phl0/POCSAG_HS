@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2009-2017 by Jonathan Naylor G4KLX
  *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -19,18 +20,53 @@
 #include "Config.h"
 #include "Globals.h"
 #include "POCSAGRX.h"
+#include "Utils.h"
 
-CPOCSAGRX::CPOCSAGRX()
+const uint8_t SYNC_BIT_START_ERRS = 2U;
+
+CPOCSAGRX::CPOCSAGRX() :
+m_prev(false),
+m_state(POCSAGRXS_NONE),
+m_bitBuffer(0x00U),
+m_outBuffer(),
+m_buffer(NULL),
+m_bufferPtr(0U),
+m_lostCount(0U)
 {
-
+  m_buffer = m_outBuffer;
 }
 
 void CPOCSAGRX::reset()
 {
-
+  m_prev      = false;
+  m_state     = POCSAGRXS_NONE;
+  m_bitBuffer = 0x00U;
+  m_bufferPtr = 0U;
+  m_lostCount = 0U;
 }
 
 void CPOCSAGRX::databit(bool bit)
-{ 
+{  
+  if (m_state == POCSAGRXS_NONE)
+    processNone(bit);
+  else
+    processData(bit);
+}
+
+void CPOCSAGRX::processNone(bool bit)
+{
+  m_bitBuffer <<= 1;
+  if (bit)
+    m_bitBuffer |= 0x01U;
+
+  // Fuzzy matching of the data sync bit sequence
+  if (countBits32((m_bitBuffer & POCSAG_SYNC_MASK) ^ POCSAG_SYNC_WORD) <= SYNC_BIT_START_ERRS) {
+    io.setDecode(true); 
+  }
+  
+}
+
+void CPOCSAGRX::processData(bool bit)
+{
 
 }
