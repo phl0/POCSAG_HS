@@ -19,11 +19,11 @@
 #if !defined(POCSAGRX_H)
 #define  POCSAGRX_H
 
-#include "PocsagDefines.h"
+#include "POCSAGDefines.h"
 
-class CPocsagRX {
+class CPOCSAGRX {
 public:
-  CPocsagRX();
+  CPOCSAGRX();
 
   void databit(bool bit);
 

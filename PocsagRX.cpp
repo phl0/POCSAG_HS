@@ -18,19 +18,19 @@
 
 #include "Config.h"
 #include "Globals.h"
-#include "PocsagRX.h"
+#include "POCSAGRX.h"
 
-CPocsagRX::CPocsagRX()
+CPOCSAGRX::CPOCSAGRX()
 {
 
 }
 
-void CPocsagRX::reset()
+void CPOCSAGRX::reset()
 {
 
 }
 
-void CPocsagRX::databit(bool bit)
+void CPOCSAGRX::databit(bool bit)
 { 
 
 }

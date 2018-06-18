@@ -1,4 +1,5 @@
 /*
+ *   Copyright (C) 2015,2016,2017,2018 by Jonathan Naylor G4KLX
  *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -19,15 +20,26 @@
 #if !defined(POCSAGTX_H)
 #define  POCSAGTX_H
 
-class CPocsagTX {
+class CPOCSAGTX {
 public:
-  CPocsagTX();
+  CPOCSAGTX();
 
   uint8_t writeData(const uint8_t* data, uint8_t length);
+
+  void setTXDelay(uint8_t delay);
+
+  uint8_t getSpace() const;
 
   void process();
 
 private:
+  CSerialRB        m_buffer;
+  uint8_t          m_poBuffer[200U];
+  uint16_t         m_poLen;
+  uint16_t         m_poPtr;
+  uint16_t         m_txDelay;
+  bool             m_delay;
+
   void writeByte(uint8_t c);
 };
 
