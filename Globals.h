@@ -38,8 +38,9 @@
 
 #include "IO.h"
 
-#include "PocsagRX.h"
-#include "PocsagTX.h"
+#include "SerialRB.h"
+#include "POCSAGRX.h"
+#include "POCSAGTX.h"
 
 const uint16_t TX_RINGBUFFER_SIZE = 1024U;
 const uint16_t RX_RINGBUFFER_SIZE = 1024U;
@@ -49,8 +50,8 @@ extern bool m_dcd;
 
 extern CIO io;
 
-extern CPocsagRX pocsagRX;
-extern CPocsagTX pocsagTX;
+extern CPOCSAGRX pocsagRX;
+extern CPOCSAGTX pocsagTX;
 
 #endif
 

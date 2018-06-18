@@ -29,8 +29,8 @@
 bool m_tx  = false;
 bool m_dcd = false;
 
-CPocsagRX   pocsagRX;
-CPocsagTX   pocsagTX;
+CPOCSAGRX   pocsagRX;
+CPOCSAGTX   pocsagTX;
 
 CIO io;
 
