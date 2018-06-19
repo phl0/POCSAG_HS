@@ -34,7 +34,7 @@ public:
 
 private:
   CSerialRB        m_buffer;
-  uint8_t          m_poBuffer[200U];
+  uint8_t          m_poBuffer[1000U];
   uint16_t         m_poLen;
   uint16_t         m_poPtr;
   uint16_t         m_txDelay;

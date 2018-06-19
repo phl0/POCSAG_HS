@@ -24,7 +24,7 @@
 
 enum POCSAGRX_STATE {
   POCSAGRXS_NONE,
-  POCSAGXS_DATA
+  POCSAGRXS_DATA
 };
 
 class CPOCSAGRX {
@@ -39,8 +39,7 @@ private:
   bool           m_prev;
   POCSAGRX_STATE m_state;
   uint32_t       m_bitBuffer;
-  uint8_t        m_outBuffer[POCSAG_FRAME_LENGTH_BYTES];
-  uint8_t*       m_buffer;
+  uint8_t        m_buffer[200U];
   uint16_t       m_bufferPtr;
   uint16_t       m_lostCount;
 

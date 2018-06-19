@@ -32,6 +32,8 @@ bool m_dcd = false;
 CPOCSAGRX   pocsagRX;
 CPOCSAGTX   pocsagTX;
 
+CPOCSAGDecoder pocsagDec;
+
 CIO io;
 
 void setup()
@@ -44,6 +46,7 @@ void setup()
 void loop()
 {
   io.process();
+  pocsagDec.process();
   pocsagTX.process();
 }
 

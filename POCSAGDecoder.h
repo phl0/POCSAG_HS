@@ -1,7 +1,5 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016 by Colin Durbridge G4EML
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,30 +16,22 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Config.h"
-#include "Globals.h"
+#if !defined(POCSAGDECODER_H)
+#define  POCSAGDECODER_H
 
-// Global variables
-bool m_tx  = false;
-bool m_dcd = false;
+#include "POCSAGDefines.h"
 
-CPOCSAGRX   pocsagRX;
-CPOCSAGTX   pocsagTX;
+class CPOCSAGDecoder {
+public:
+  CPOCSAGDecoder();
 
-CPOCSAGDecoder pocsagDec;
+  void addData(uint8_t* data);
 
-CIO io;
+  void process();
 
-void setup()
-{
-  io.start();
-  io.setFreq(FREQ_RX, FREQ_TX, 255U);
-  io.ifConf();
-}
+private:
+  uint8_t    m_buffer[POCSAG_FRAME_LENGTH_BYTES];
 
-void loop()
-{
-  io.process();
-  pocsagDec.process();
-  pocsagTX.process();
-}
+};
+
+#endif
