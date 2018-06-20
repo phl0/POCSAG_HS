@@ -20,8 +20,6 @@ POCSAG_HS_PATH=.
 
 # STM32 library paths
 F1_LIB_PATH=./STM32F10X_Lib
-F4_LIB_PATH=./STM32F4XX_Lib
-F7_LIB_PATH=./STM32F7XX_Lib
 
 # MCU external clock frequency (Hz)
 CLK_PI_F4=12000000
@@ -30,8 +28,6 @@ CLK_DEF=8000000
 # Directory Structure
 BINDIR=bin
 OBJDIR_F1=obj_f1
-OBJDIR_F4=obj_f4
-OBJDIR_F7=obj_f7
 
 # Output files
 BINELF_F1=pocsag_f1.elf
@@ -40,25 +36,13 @@ BINBIN_F1=pocsag_f1.bin
 BINELF_F1BL=pocsag_f1bl.elf
 BINHEX_F1BL=pocsag_f1bl.hex
 BINBIN_F1BL=pocsag_f1bl.bin
-BINELF_F4=pocsag_f4.elf
-BINHEX_F4=pocsag_f4.hex
-BINBIN_F4=pocsag_f4.bin
-BINELF_F7=pocsag_f7.elf
-BINHEX_F7=pocsag_f7.hex
-BINBIN_F7=pocsag_f7.bin
 
 # Header directories
 INC_F1= . $(F1_LIB_PATH)/CMSIS/ $(F1_LIB_PATH)/Device/ $(F1_LIB_PATH)/STM32F10x_StdPeriph_Driver/inc/ $(F1_LIB_PATH)/usb/inc/
 INCLUDES_F1=$(INC_F1:%=-I%)
-INC_F4= . $(F4_LIB_PATH)/CMSIS/Include/ $(F4_LIB_PATH)/Device/ $(F4_LIB_PATH)/STM32F4xx_StdPeriph_Driver/include/
-INCLUDES_F4=$(INC_F4:%=-I%)
-INC_F7= . $(F7_LIB_PATH)/CMSIS/Include/ $(F7_LIB_PATH)/Device/ $(F7_LIB_PATH)/STM32F7xx_StdPeriph_Driver/inc/
-INCLUDES_F7=$(INC_F7:%=-I%)
 
 # CMSIS libraries
 INCLUDES_LIBS_F1=
-INCLUDES_LIBS_F4=$(F4_LIB_PATH)/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a
-INCLUDES_LIBS_F7=$(F7_LIB_PATH)/CMSIS/Lib/GCC/libarm_cortexM7lfsp_math.a
 
 # STM32F1 Standard Peripheral Libraries source path
 STD_LIB_F1=$(F1_LIB_PATH)/STM32F10x_StdPeriph_Driver/src
@@ -66,23 +50,9 @@ STD_LIB_F1=$(F1_LIB_PATH)/STM32F10x_StdPeriph_Driver/src
 # STM32F1 USB support source path
 USB_F1=$(F1_LIB_PATH)/usb
 
-# STM32F4 Standard Peripheral Libraries source path
-STD_LIB_F4=$(F4_LIB_PATH)/STM32F4xx_StdPeriph_Driver/source
-
-# STM32F7 Standard Peripheral Libraries source path
-STD_LIB_F7=$(F7_LIB_PATH)/STM32F7xx_StdPeriph_Driver/src
-
 # STM32F1 system source path
 SYS_DIR_F1=$(F1_LIB_PATH)/Device
 STARTUP_DIR_F1=$(F1_LIB_PATH)/Device/startup
-
-# STM32F4 system source path
-SYS_DIR_F4=$(F4_LIB_PATH)/Device
-STARTUP_DIR_F4=$(F4_LIB_PATH)/Device/startup
-
-# STM32F7 system source path
-SYS_DIR_F7=$(F7_LIB_PATH)/Device
-STARTUP_DIR_F7=$(F7_LIB_PATH)/Device/startup
 
 # GNU ARM Embedded Toolchain
 CC=arm-none-eabi-gcc
@@ -103,7 +73,7 @@ ifeq ($(OS),Windows_NT)
 	DFU_UTIL=./$(F1_LIB_PATH)/utils/win/dfu-util.exe
 	STM32FLASH=./$(F1_LIB_PATH)/utils/win/stm32flash.exe
 else
-	CLEANCMD=rm -f $(OBJ_F1BL) $(OBJ_F4) $(OBJ_F7) $(BINDIR)/*.hex $(BINDIR)/pocsag_f1.bin $(BINDIR)/*.elf
+	CLEANCMD=rm -f $(OBJ_F1BL) $(BINDIR)/*.hex $(BINDIR)/pocsag_f1.bin $(BINDIR)/*.elf
 	MDDIRS=mkdir $@
 	
     ifeq ($(shell uname -s),Linux)
@@ -154,45 +124,23 @@ SYS_F1=$(wildcard $(SYS_DIR_F1)/*.c)
 STARTUP_F1=$(wildcard $(STARTUP_DIR_F1)/*.c)
 CXX_USB_F1=$(wildcard $(USB_F1)/*.cpp)
 C_USB_F1=$(wildcard $(USB_F1)/*.c)
-CSRC_STD_F4=$(wildcard $(STD_LIB_F4)/*.c)
-SYS_F4=$(wildcard $(SYS_DIR_F4)/*.c)
-STARTUP_F4=$(wildcard $(STARTUP_DIR_F4)/*.c)
-CSRC_STD_F7=$(wildcard $(STD_LIB_F7)/*.c)
-SYS_F7=$(wildcard $(SYS_DIR_F7)/*.c)
-STARTUP_F7=$(wildcard $(STARTUP_DIR_F7)/*.c)
 OBJ_F1=$(CXXSRC:$(POCSAG_HS_PATH)/%.cpp=$(OBJDIR_F1)/%.o) $(CSRC_STD_F1:$(STD_LIB_F1)/%.c=$(OBJDIR_F1)/%.o) $(SYS_F1:$(SYS_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) $(STARTUP_F1:$(STARTUP_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) 
 OBJ_F1BL=$(CXXSRC:$(POCSAG_HS_PATH)/%.cpp=$(OBJDIR_F1)/%.o) $(CSRC_STD_F1:$(STD_LIB_F1)/%.c=$(OBJDIR_F1)/%.o) $(SYS_F1:$(SYS_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) $(STARTUP_F1:$(STARTUP_DIR_F1)/%.c=$(OBJDIR_F1)/%.o) $(CXX_USB_F1:$(USB_F1)/%.cpp=$(OBJDIR_F1)/%.o) $(C_USB_F1:$(USB_F1)/%.c=$(OBJDIR_F1)/%.o)
-OBJ_F4=$(CXXSRC:$(POCSAG_HS_PATH)/%.cpp=$(OBJDIR_F4)/%.o) $(CSRC_STD_F4:$(STD_LIB_F4)/%.c=$(OBJDIR_F4)/%.o) $(SYS_F4:$(SYS_DIR_F4)/%.c=$(OBJDIR_F4)/%.o) $(STARTUP_F4:$(STARTUP_DIR_F4)/%.c=$(OBJDIR_F4)/%.o)
-OBJ_F7=$(CXXSRC:$(POCSAG_HS_PATH)/%.cpp=$(OBJDIR_F7)/%.o) $(CSRC_STD_F7:$(STD_LIB_F7)/%.c=$(OBJDIR_F7)/%.o) $(SYS_F7:$(SYS_DIR_F7)/%.c=$(OBJDIR_F7)/%.o) $(STARTUP_F7:$(STARTUP_DIR_F7)/%.c=$(OBJDIR_F7)/%.o)
 
 # MCU flags
 MCFLAGS_F1=-mcpu=cortex-m3 -march=armv7-m -mthumb -Wall -Wextra
-MCFLAGS_F4=-mcpu=cortex-m4 -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb-interwork
-MCFLAGS_F7=-mcpu=cortex-m7 -mthumb -mlittle-endian -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb-interwork
 
 # Compile flags
 DEFS_F1_HS=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x0 -DMADEBYMAKEFILE
 DEFS_F1_HS_BL=-DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DHSE_VALUE=$(OSC) -DVECT_TAB_OFFSET=0x2000 -DMADEBYMAKEFILE
-# STM32F446 Pi-Hat board:
-DEFS_PI_F4=-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DSTM32F446xx -DSTM32F4_PI -DHSE_VALUE=$(OSC) -DMADEBYMAKEFILE
-# STM32F4 Nucleo-64 F446RE board:
-DEFS_F446=-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DSTM32F446xx -DSTM32F4_NUCLEO -DHSE_VALUE=$(OSC) -DMADEBYMAKEFILE
-# STM32F7 Nucleo-144 F767ZI board:
-DEFS_F767=-DUSE_HAL_DRIVER -DSTM32F767xx -DSTM32F7XX -DSTM32F7_NUCLEO -DHSE_VALUE=$(OSC) -DMADEBYMAKEFILE
 
 # Build compiler flags
 CFLAGS_F1=-c $(MCFLAGS_F1) $(INCLUDES_F1)
 CXXFLAGS_F1=-c $(MCFLAGS_F1) $(INCLUDES_F1)
-CFLAGS_F4=-c $(MCFLAGS_F4) $(INCLUDES_F4)
-CXXFLAGS_F4=-c $(MCFLAGS_F4) $(INCLUDES_F4)
-CFLAGS_F7=-c $(MCFLAGS_F7) $(INCLUDES_F7)
-CXXFLAGS_F7=-c $(MCFLAGS_F7) $(INCLUDES_F7)
 
 # Linker flags
 LDFLAGS_F1_N =-T normal.ld $(MCFLAGS_F1) $(INCLUDES_LIBS_F1)
 LDFLAGS_F1_BL =-T bootloader.ld $(MCFLAGS_F1) $(INCLUDES_LIBS_F1)
-LDFLAGS_F4 =-T stm32f4xx_link.ld $(MCFLAGS_F4) $(INCLUDES_LIBS_F4)
-LDFLAGS_F7 =-T stm32f7xx_link.ld $(MCFLAGS_F7) $(INCLUDES_LIBS_F7)
 
 # Common flags
 CFLAGS=-Os -ffunction-sections -fdata-sections -nostdlib -DCUSTOM_NEW -DNO_EXCEPTIONS -Wno-unused-parameter -nostdlib
@@ -203,21 +151,6 @@ LDFLAGS=-Os --specs=nano.specs --specs=nosys.specs
 .PHONY: all release_f1 release_f4 release_f7 hs bl pi-f4 f446 f767 clean
 
 all: hs
-
-pi-f4: CFLAGS+=$(CFLAGS_F4) $(DEFS_PI_F4)
-pi-f4: CXXFLAGS+=$(CXXFLAGS_F4) $(DEFS_PI_F4)
-pi-f4: LDFLAGS+=$(LDFLAGS_F4)
-pi-f4: release_f4
-
-f446: CFLAGS+=$(CFLAGS_F4) $(DEFS_F446)
-f446: CXXFLAGS+=$(CXXFLAGS_F4) $(DEFS_F446)
-f446: LDFLAGS+=$(LDFLAGS_F4)
-f446: release_f4
-
-f767: CFLAGS+=$(CFLAGS_F7) $(DEFS_F767)
-f767: CXXFLAGS+=$(CXXFLAGS_F7) $(DEFS_F767)
-f767: LDFLAGS+=$(LDFLAGS_F7)
-f767: release_f7
 
 hs: CFLAGS+=$(CFLAGS_F1) $(DEFS_F1_HS)
 hs: CXXFLAGS+=$(CXXFLAGS_F1) $(DEFS_F1_HS)
@@ -241,28 +174,10 @@ release_f1bl: $(OBJDIR_F1)
 release_f1bl: $(BINDIR)/$(BINHEX_F1BL)
 release_f1bl: $(BINDIR)/$(BINBIN_F1BL)
 
-release_f4: GitVersion.h
-release_f4: $(BINDIR)
-release_f4: $(OBJDIR_F4)
-release_f4: $(BINDIR)/$(BINHEX_F4)
-release_f4: $(BINDIR)/$(BINBIN_F4)
-
-release_f7: GitVersion.h
-release_f7: $(BINDIR)
-release_f7: $(OBJDIR_F7)
-release_f7: $(BINDIR)/$(BINHEX_F7)
-release_f7: $(BINDIR)/$(BINBIN_F7)
-
 $(BINDIR):
 	$(MDDIRS)
 
 $(OBJDIR_F1):
-	$(MDDIRS)
-
-$(OBJDIR_F4):
-	$(MDDIRS)
-
-$(OBJDIR_F7):
 	$(MDDIRS)
 
 $(BINDIR)/$(BINHEX_F1BL): $(BINDIR)/$(BINELF_F1BL)
@@ -291,53 +206,11 @@ $(BINDIR)/$(BINELF_F1): $(OBJ_F1)
 	@echo "Linking complete!\n"
 	$(SIZE) $(BINDIR)/$(BINELF_F1)
 
-$(BINDIR)/$(BINHEX_F4): $(BINDIR)/$(BINELF_F4)
-	$(CP) -O ihex $< $@
-	@echo "Objcopy from ELF to IHEX complete!\n"
-	
-$(BINDIR)/$(BINBIN_F4): $(BINDIR)/$(BINELF_F4)
-	$(CP) -O binary $< $@
-	@echo "Objcopy from ELF to BINARY complete!\n"
-
-$(BINDIR)/$(BINELF_F4): $(OBJ_F4)
-	$(CXX) $(OBJ_F4) $(LDFLAGS) -o $@
-	@echo "Linking complete!\n"
-	$(SIZE) $(BINDIR)/$(BINELF_F4)
-
-$(BINDIR)/$(BINHEX_F7): $(BINDIR)/$(BINELF_F7)
-	$(CP) -O ihex $< $@
-	@echo "Objcopy from ELF to IHEX complete!\n"
-	
-$(BINDIR)/$(BINBIN_F7): $(BINDIR)/$(BINELF_F7)
-	$(CP) -O binary $< $@
-	@echo "Objcopy from ELF to BINARY complete!\n"
-
-$(BINDIR)/$(BINELF_F7): $(OBJ_F7)
-	$(CXX) $(OBJ_F7) $(LDFLAGS) -o $@
-	@echo "Linking complete!\n"
-	$(SIZE) $(BINDIR)/$(BINELF_F7)
-
 $(OBJDIR_F1)/%.o: $(POCSAG_HS_PATH)/%.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@
 	@echo "Compiled "$<"!\n"
 
-$(OBJDIR_F4)/%.o: $(POCSAG_HS_PATH)/%.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
-	@echo "Compiled "$<"!\n"
-
-$(OBJDIR_F7)/%.o: $(POCSAG_HS_PATH)/%.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
-	@echo "Compiled "$<"!\n"
-
 $(OBJDIR_F1)/%.o: $(STD_LIB_F1)/%.c
-	$(CC) $(CFLAGS) $< -o $@
-	@echo "Compiled "$<"!\n"
-
-$(OBJDIR_F4)/%.o: $(STD_LIB_F4)/%.c
-	$(CC) $(CFLAGS) $< -o $@
-	@echo "Compiled "$<"!\n"
-
-$(OBJDIR_F7)/%.o: $(STD_LIB_F7)/%.c
 	$(CC) $(CFLAGS) $< -o $@
 	@echo "Compiled "$<"!\n"
 
@@ -346,22 +219,6 @@ $(OBJDIR_F1)/%.o: $(SYS_DIR_F1)/%.c
 	@echo "Compiled "$<"!\n"
 
 $(OBJDIR_F1)/%.o: $(STARTUP_DIR_F1)/%.c
-	$(CC) $(CFLAGS) $< -o $@
-	@echo "Compiled "$<"!\n"
-
-$(OBJDIR_F4)/%.o: $(SYS_DIR_F4)/%.c
-	$(CC) $(CFLAGS) $< -o $@
-	@echo "Compiled "$<"!\n"
-
-$(OBJDIR_F4)/%.o: $(STARTUP_DIR_F4)/%.c
-	$(CC) $(CFLAGS) $< -o $@
-	@echo "Compiled "$<"!\n"
-
-$(OBJDIR_F7)/%.o: $(SYS_DIR_F7)/%.c
-	$(CC) $(CFLAGS) $< -o $@
-	@echo "Compiled "$<"!\n"
-
-$(OBJDIR_F7)/%.o: $(STARTUP_DIR_F7)/%.c
 	$(CC) $(CFLAGS) $< -o $@
 	@echo "Compiled "$<"!\n"
 
