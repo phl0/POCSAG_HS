@@ -34,6 +34,9 @@
 // Enable ADF7021 support:
 #define ENABLE_ADF7021
 
+// Enable display support:
+#define ENABLE_NEXTION
+
 // TCXO of the ADF7021
 // For 14.7456 MHz:
 #define ADF7021_14_7456

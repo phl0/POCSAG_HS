@@ -1,7 +1,5 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016 by Colin Durbridge G4EML
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,35 +19,16 @@
 #include "Config.h"
 #include "Globals.h"
 
-// Global variables
-bool m_tx  = false;
-bool m_dcd = false;
-
-CPOCSAGRX   pocsagRX;
-CPOCSAGTX   pocsagTX;
-
-CPOCSAGDecoder pocsagDec;
-CPOCSAGEncoder pocsagEnc;
-
-CIO io;
-
-CSerialPort serial;
-
-CDisplay display;
-
-void setup()
+CDisplay::CDisplay()
 {
-  io.start();
-  serial.start();
-  display.init();
-  io.setFreq(FREQ_RX, FREQ_TX, 255U);
-  io.ifConf();
 }
 
-void loop()
+void CDisplay::init()
 {
-  io.process();
-  pocsagDec.process();
-  pocsagTX.process();
-  serial.process();
+  // Things to do...
+}
+
+void CDisplay::showMsg(uint8_t* data)
+{
+  // Things to do...
 }

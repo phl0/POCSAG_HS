@@ -42,6 +42,9 @@
 #include "POCSAGRX.h"
 #include "POCSAGTX.h"
 #include "POCSAGDecoder.h"
+#include "POCSAGEncoder.h"
+#include "SerialPort.h"
+#include "Display.h"
 
 const uint16_t TX_RINGBUFFER_SIZE = 1024U;
 const uint16_t RX_RINGBUFFER_SIZE = 1024U;
@@ -51,10 +54,15 @@ extern bool m_dcd;
 
 extern CIO io;
 
+extern CSerialPort serial;
+
+extern CDisplay display;
+
 extern CPOCSAGRX pocsagRX;
 extern CPOCSAGTX pocsagTX;
 
 extern CPOCSAGDecoder pocsagDec;
+extern CPOCSAGEncoder pocsagEnc;
 
 #endif
 

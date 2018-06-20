@@ -1,7 +1,5 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016 by Colin Durbridge G4EML
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,38 +16,20 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Config.h"
-#include "Globals.h"
+#if !defined(POCSAGENCODER_H)
+#define  POCSAGENCODER_H
 
-// Global variables
-bool m_tx  = false;
-bool m_dcd = false;
+#include "POCSAGDefines.h"
 
-CPOCSAGRX   pocsagRX;
-CPOCSAGTX   pocsagTX;
+class CPOCSAGEncoder {
+public:
+  CPOCSAGEncoder();
 
-CPOCSAGDecoder pocsagDec;
-CPOCSAGEncoder pocsagEnc;
+  void sendMsg(uint8_t* data);
 
-CIO io;
+private:
+  uint8_t    m_buffer[POCSAG_FRAME_LENGTH_BYTES];
 
-CSerialPort serial;
+};
 
-CDisplay display;
-
-void setup()
-{
-  io.start();
-  serial.start();
-  display.init();
-  io.setFreq(FREQ_RX, FREQ_TX, 255U);
-  io.ifConf();
-}
-
-void loop()
-{
-  io.process();
-  pocsagDec.process();
-  pocsagTX.process();
-  serial.process();
-}
+#endif

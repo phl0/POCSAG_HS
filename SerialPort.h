@@ -1,7 +1,6 @@
 /*
- *   Copyright (C) 2015,2016 by Jonathan Naylor G4KLX
- *   Copyright (C) 2016 by Colin Durbridge G4EML
- *   Copyright (C) 2016,2017,2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2015,2016,2018 by Jonathan Naylor G4KLX
+ *   Copyright (C) 2018 by Andy Uribe CA6JAU
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,38 +17,26 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Config.h"
+#if !defined(SERIALPORT_H)
+#define  SERIALPORT_H
+
 #include "Globals.h"
 
-// Global variables
-bool m_tx  = false;
-bool m_dcd = false;
+class CSerialPort {
+public:
+  CSerialPort();
 
-CPOCSAGRX   pocsagRX;
-CPOCSAGTX   pocsagTX;
+  void start();
 
-CPOCSAGDecoder pocsagDec;
-CPOCSAGEncoder pocsagEnc;
+  void process();
 
-CIO io;
+private:  
+  // Hardware versions
+  void    beginInt(uint8_t n, int speed);
+  int     availableInt(uint8_t n);
+  uint8_t readInt(uint8_t n);
+  void    writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool flush = false);
+};
 
-CSerialPort serial;
+#endif
 
-CDisplay display;
-
-void setup()
-{
-  io.start();
-  serial.start();
-  display.init();
-  io.setFreq(FREQ_RX, FREQ_TX, 255U);
-  io.ifConf();
-}
-
-void loop()
-{
-  io.process();
-  pocsagDec.process();
-  pocsagTX.process();
-  serial.process();
-}

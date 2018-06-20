@@ -33,12 +33,19 @@ CPOCSAGRX   pocsagRX;
 CPOCSAGTX   pocsagTX;
 
 CPOCSAGDecoder pocsagDec;
+CPOCSAGEncoder pocsagEnc;
 
 CIO io;
+
+CSerialPort serial;
+
+CDisplay display;
 
 void setup()
 {
   io.start();
+  serial.start();
+  display.init();
   io.setFreq(FREQ_RX, FREQ_TX, 255U);
   io.ifConf();
 }
@@ -48,6 +55,7 @@ void loop()
   io.process();
   pocsagDec.process();
   pocsagTX.process();
+  serial.process();
 }
 
 int main()
