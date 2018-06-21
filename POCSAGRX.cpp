@@ -100,7 +100,7 @@ void CPOCSAGRX::processData(bool bit)
     m_lostCount--;
     io.setDecode(false);
     m_bufferPtr = 0U;
- 
+
     if (m_lostCount == 0U)
       m_state = POCSAGRXS_NONE;
     else
