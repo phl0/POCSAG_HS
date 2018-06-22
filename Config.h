@@ -44,9 +44,9 @@
 // #define ADF7021_12_2880
 
 // POCSAG configuration
-#define FREQ_RX 434600000
-#define FREQ_TX 434600000
-#define RIC     123456
+#define FREQ_RX    434600000
+#define FREQ_TX    434600000
+#define RIC_NUMBER 102341
 
 // Send RSSI value:
 // #define SEND_RSSI_DATA

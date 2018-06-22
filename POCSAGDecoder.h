@@ -30,7 +30,16 @@ public:
   void process();
 
 private:
-  uint8_t    m_buffer[POCSAG_FRAME_LENGTH_BYTES];
+  bool checkAddress(uint32_t* data);
+  bool isIdle(uint32_t &data);
+  void genAddress();
+  void addBCHAndParity(uint32_t& word);
+
+  CSerialRB    m_bufferRX;
+  uint32_t     m_words[POCSAG_FRAME_LENGTH_BYTES/4U];
+  uint32_t     m_ric;
+  uint8_t      m_frame_pos;
+  uint32_t     m_address;
 
 };
 
