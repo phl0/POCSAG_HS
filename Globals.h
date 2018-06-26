@@ -35,6 +35,7 @@
 #include "SerialRB.h"
 #include "POCSAGRX.h"
 #include "POCSAGTX.h"
+#include "BCH3121.h"
 #include "POCSAGDecoder.h"
 #include "POCSAGEncoder.h"
 #include "SerialPort.h"
