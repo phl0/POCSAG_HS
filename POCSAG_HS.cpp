@@ -32,6 +32,8 @@ bool m_dcd = false;
 CPOCSAGRX   pocsagRX;
 CPOCSAGTX   pocsagTX;
 
+CBCH3121    pocsagFEC;
+
 CPOCSAGDecoder pocsagDec;
 CPOCSAGEncoder pocsagEnc;
 

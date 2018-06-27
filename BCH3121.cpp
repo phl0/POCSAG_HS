@@ -76,7 +76,7 @@ void CBCH3121::encode(uint32_t& data)
     data |= 0x01U;
 }
 
-bool CBCH3121::decode(uint32_t& data, uint8_t& errors)
+bool CBCH3121::decode(uint32_t& data, uint16_t& errors)
 {
   int8_t S1_3, tmp, X1, X2;
   uint8_t cnt = 0U;
@@ -186,7 +186,7 @@ bool CBCH3121::calc_parity(uint32_t data)
   return data & 0x01U;
 }
 
-uint8_t CBCH3121::check_parity(uint32_t& data)
+uint16_t CBCH3121::check_parity(uint32_t& data)
 {
   // Check for error in parity bit
   if (calc_parity(data)) {

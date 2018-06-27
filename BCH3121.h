@@ -24,12 +24,12 @@ public:
   CBCH3121();
 
   void encode(uint32_t& data);
-  bool decode(uint32_t& data, uint8_t& errors);
+  bool decode(uint32_t& data, uint16_t& errors);
 
 private:
-  void    calc_syndrome(uint32_t data);
-  bool    calc_parity(uint32_t data);
-  uint8_t check_parity(uint32_t& data);
+  void     calc_syndrome(uint32_t data);
+  bool     calc_parity(uint32_t data);
+  uint16_t check_parity(uint32_t& data);
 
   int8_t  m_S1;
   int8_t  m_S3;

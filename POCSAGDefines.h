@@ -37,4 +37,8 @@ const uint32_t POCSAG_IDLE_WORD = 0x7A89C197U;
 
 const uint8_t  POCSAG_SYNC = 0xAAU;
 
+const uint32_t POCSAG_TYPE_MASK = 0x80000000U;
+const uint32_t POCSAG_ADDR_MASK = 0x7FFFE000U;
+const uint32_t POCSAG_FUNC_MASK = 0x00001800U;
+
 #endif

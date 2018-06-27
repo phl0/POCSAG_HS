@@ -20,21 +20,28 @@
 #include "Globals.h"
 #include "Utils.h"
 
-const uint8_t MAX_BIT_ERRS = 2U;
-
 CPOCSAGDecoder::CPOCSAGDecoder() :
 m_bufferRX(1000U)
 {
   m_ric = RIC_NUMBER;
+  m_address_cw = (m_ric / POCSAG_FRAME_ADDRESSES) << 13;
   m_frame_pos = m_ric % POCSAG_FRAME_ADDRESSES;
-
-  genAddress();
+  m_addr_pos = (8U * m_frame_pos) + 4U;
 }
 
 void CPOCSAGDecoder::addData(uint8_t* data)
 {
-  for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
-    m_bufferRX.put(data[i]);
+  uint8_t func;
+
+  // Copy data only if the address matches with our RIC number
+  if (checkAddress(data, func)) {
+    for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
+      m_bufferRX.put(data[i]);
+
+    io.DEB_pin(HIGH); // debug test pin
+  }
+  else
+    io.DEB_pin(LOW); // debug test pin
 }
 
 void CPOCSAGDecoder::process()
@@ -48,54 +55,30 @@ void CPOCSAGDecoder::process()
     m_words[i>>2] |= m_bufferRX.get() << 8 * (3 - (i % 4));
   }
 
-  if (checkAddress(m_words))
-    io.DEB_pin(HIGH); // debug test pin
+  // Things to do...
 }
 
-bool CPOCSAGDecoder::checkAddress(uint32_t* data)
+bool CPOCSAGDecoder::checkAddress(uint8_t* data, uint8_t& func)
 {
-  if (countBits32(data[2U*m_frame_pos + 1U] ^ m_address) <= MAX_BIT_ERRS)
-    return true;
-  else
-    return false;
-}
+  uint16_t errors = 0U;
 
-bool CPOCSAGDecoder::isIdle(uint32_t &data)
-{
-  if (countBits32(data ^ POCSAG_IDLE_WORD) <= MAX_BIT_ERRS)
-    return true;
-  else
-    return false;
-}
+  // Extract address codeword at the expected position
+  uint32_t addr_cw = data[m_addr_pos + 0U] << 24;
+  addr_cw |= data[m_addr_pos + 1U] << 16;
+  addr_cw |= data[m_addr_pos + 2U] << 8;
+  addr_cw |= data[m_addr_pos + 3U];
 
-// Functions from MMDVMHost (POCSAGControl.cpp), Jonathan Naylor, G4KLX:
-
-void CPOCSAGDecoder::genAddress()
-{
-  m_address = 0x00001800U; // Alphanumeric for now, just testing...
-  m_address |= (m_ric / POCSAG_FRAME_ADDRESSES) << 13;
-  addBCHAndParity(m_address);
-}
-
-void CPOCSAGDecoder::addBCHAndParity(uint32_t& word)
-{
-  uint32_t temp = word;
-
-  for (unsigned int i = 0U; i < 21U; i++, temp <<= 1) {
-    if (temp & 0x80000000U)
-      temp ^= 0xED200000U;
-  }
-
-  word |= (temp >> 21);
-
-  temp = word;
-
-  unsigned int parity = 0U;
-  for (unsigned int i = 0U; i < 32U; i++, temp <<= 1) {
-    if (temp & 0x80000000U)
-      parity++;
-  }
-
-  if ((parity % 2U) == 1U)
-    word |= 0x00000001U;
+  // Check and correct for errors
+  if (pocsagFEC.decode(addr_cw, errors)) {
+    if (addr_cw & POCSAG_TYPE_MASK) {
+      return false; // received a message codeword, not address
+    } else if (addr_cw == POCSAG_IDLE_WORD) {
+      return false; // received a IDLE codeword
+    } else if ((addr_cw & POCSAG_ADDR_MASK) == m_address_cw) {
+      func = (addr_cw & POCSAG_FUNC_MASK) >> 11;
+      return true;  // address for us !
+    } else
+      return false;
+  } else
+    return false; // uncorrectable error
 }

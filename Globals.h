@@ -56,6 +56,8 @@ extern CDisplay display;
 extern CPOCSAGRX pocsagRX;
 extern CPOCSAGTX pocsagTX;
 
+extern CBCH3121 pocsagFEC;
+
 extern CPOCSAGDecoder pocsagDec;
 extern CPOCSAGEncoder pocsagEnc;
 
