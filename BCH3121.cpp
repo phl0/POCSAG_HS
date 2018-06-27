@@ -88,6 +88,7 @@ bool CBCH3121::decode(uint32_t& data, uint8_t& errors)
 
   if (m_S1 == -1 && m_S3 == -1) {
     // return if no errors
+    errors += check_parity(data);
     return true;
   }
   else {
@@ -98,7 +99,7 @@ bool CBCH3121::decode(uint32_t& data, uint8_t& errors)
     if (S1_3 == m_S3) {
       // Correct single error
       data ^= (0x01U << (m_S1 + 1U));
-      errors++;
+      errors += check_parity(data) + 1U;
       return true;
     }
     else { // More than 1 errors
@@ -143,7 +144,7 @@ bool CBCH3121::decode(uint32_t& data, uint8_t& errors)
       data ^= (0x80000000U >> (locator[0U] - 1U));
       data ^= (0x80000000U >> (locator[1U] - 1U));
 
-      errors += 2U;
+      errors += check_parity(data) + 2U;
 
       return true;
     }
@@ -184,3 +185,14 @@ bool CBCH3121::calc_parity(uint32_t data)
 
   return data & 0x01U;
 }
+
+uint8_t CBCH3121::check_parity(uint32_t& data)
+{
+  // Check for error in parity bit
+  if (calc_parity(data)) {
+    data ^= 0x01;
+    return 1U;
+  } else
+    return 0U;
+}
+
