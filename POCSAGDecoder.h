@@ -21,6 +21,12 @@
 
 #include "POCSAGDefines.h"
 
+enum POCSAG_RXS {
+  POCSAG_IDLE,
+  POCSAG_START,
+  POCSAG_MSG
+};
+
 class CPOCSAGDecoder {
 public:
   CPOCSAGDecoder();
@@ -30,14 +36,16 @@ public:
   void process();
 
 private:
-  bool checkAddress(uint8_t* data, uint8_t& func);
+  bool checkAddress(uint8_t* data);
+  bool checkAddress(uint32_t addr_cw, uint8_t& func, uint16_t& errors);
 
   CSerialRB    m_bufferRX;
-  uint32_t     m_words[POCSAG_FRAME_LENGTH_BYTES/4U];
+  uint32_t     m_words[POCSAG_FRAME_LENGTH_WORDS];
   uint32_t     m_ric;
   uint8_t      m_frame_pos;
   uint16_t     m_addr_pos;
   uint32_t     m_address_cw;
+  POCSAG_RXS   m_state;
 
 };
 

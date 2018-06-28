@@ -21,7 +21,8 @@
 #include "Utils.h"
 
 CPOCSAGDecoder::CPOCSAGDecoder() :
-m_bufferRX(1000U)
+m_bufferRX(1000U),
+m_state(POCSAG_IDLE)
 {
   m_ric = RIC_NUMBER;
   m_address_cw = (m_ric / POCSAG_FRAME_ADDRESSES) << 13;
@@ -31,10 +32,13 @@ m_bufferRX(1000U)
 
 void CPOCSAGDecoder::addData(uint8_t* data)
 {
-  uint8_t func;
+  if (m_state == POCSAG_IDLE) {
+    if (checkAddress(data))
+      m_state = POCSAG_START;
+  }
 
   // Copy data only if the address matches with our RIC number
-  if (checkAddress(data, func)) {
+  if (m_state != POCSAG_IDLE) {
     for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
       m_bufferRX.put(data[i]);
 
@@ -46,19 +50,61 @@ void CPOCSAGDecoder::addData(uint8_t* data)
 
 void CPOCSAGDecoder::process()
 {
+  // Check if we have data for us
   if (m_bufferRX.getData() < POCSAG_FRAME_LENGTH_BYTES)
     return;
 
+  // Clear work buffer
   ::memset(m_words, 0U, POCSAG_FRAME_LENGTH_BYTES);
 
+  // Transform bytes to 32 bits words
   for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++) {
     m_words[i>>2] |= m_bufferRX.get() << 8 * (3 - (i % 4));
   }
 
-  // Things to do...
+  uint16_t errors = 0U;
+  uint8_t count = 0U;
+  uint8_t func = 0U;
+
+  while (count < POCSAG_FRAME_LENGTH_WORDS) {
+    switch (m_state) {
+      case POCSAG_START:
+      case POCSAG_IDLE:
+        // Check address again, extract functional bits
+        count = (2U * m_frame_pos) + 1U;
+        if (checkAddress(m_words[count], func, errors)) {
+          count++;
+          m_state = POCSAG_MSG;
+        } else {
+          // Not for us, discard batch
+          count = POCSAG_FRAME_LENGTH_WORDS;
+          m_state = POCSAG_IDLE;
+        }
+        break;
+      case POCSAG_MSG:
+        // Check and fix errors
+        if (pocsagFEC.decode(m_words[count], errors)) {
+          // See if the codeword is a message
+          if (m_words[count] & POCSAG_MSG_MASK) {
+            // Do something with the data received...
+            count++;
+          }
+          else {
+            count = POCSAG_FRAME_LENGTH_WORDS;
+            m_state = POCSAG_IDLE;
+          }
+        } else {
+          // Codeword too corrupt
+          count++;
+        }
+        break;
+      default:
+        break;
+    }
+  }
 }
 
-bool CPOCSAGDecoder::checkAddress(uint8_t* data, uint8_t& func)
+bool CPOCSAGDecoder::checkAddress(uint8_t* data)
 {
   uint16_t errors = 0U;
 
@@ -70,7 +116,23 @@ bool CPOCSAGDecoder::checkAddress(uint8_t* data, uint8_t& func)
 
   // Check and correct for errors
   if (pocsagFEC.decode(addr_cw, errors)) {
-    if (addr_cw & POCSAG_TYPE_MASK) {
+    if (addr_cw & POCSAG_MSG_MASK) {
+      return false; // received a message codeword, not address
+    } else if (addr_cw == POCSAG_IDLE_WORD) {
+      return false; // received a IDLE codeword
+    } else if ((addr_cw & POCSAG_ADDR_MASK) == m_address_cw) {
+      return true;  // address for us !
+    } else
+      return false;
+  } else
+    return false; // uncorrectable error
+}
+
+bool CPOCSAGDecoder::checkAddress(uint32_t addr_cw, uint8_t& func, uint16_t& errors)
+{
+  // Check and correct for errors
+  if (pocsagFEC.decode(addr_cw, errors)) {
+    if (addr_cw & POCSAG_MSG_MASK) {
       return false; // received a message codeword, not address
     } else if (addr_cw == POCSAG_IDLE_WORD) {
       return false; // received a IDLE codeword
@@ -82,3 +144,4 @@ bool CPOCSAGDecoder::checkAddress(uint8_t* data, uint8_t& func)
   } else
     return false; // uncorrectable error
 }
+
