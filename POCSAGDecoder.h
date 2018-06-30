@@ -32,6 +32,7 @@ public:
   CPOCSAGDecoder();
 
   void addData(uint8_t* data);
+  void setIdle();
 
   void process();
 
@@ -46,6 +47,8 @@ private:
   uint16_t     m_addr_pos;
   uint32_t     m_address_cw;
   POCSAG_RXS   m_state;
+  uint8_t      m_func;
+  uint16_t     m_errors;
 
 };
 

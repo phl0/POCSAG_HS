@@ -22,7 +22,9 @@
 
 CPOCSAGDecoder::CPOCSAGDecoder() :
 m_bufferRX(1000U),
-m_state(POCSAG_IDLE)
+m_state(POCSAG_IDLE),
+m_func(0U),
+m_errors(0U)
 {
   m_ric = RIC_NUMBER;
   m_address_cw = (m_ric / POCSAG_FRAME_ADDRESSES) << 13;
@@ -32,20 +34,25 @@ m_state(POCSAG_IDLE)
 
 void CPOCSAGDecoder::addData(uint8_t* data)
 {
+  // Check if address matches with RIC
   if (m_state == POCSAG_IDLE) {
     if (checkAddress(data))
       m_state = POCSAG_START;
   }
 
-  // Copy data only if the address matches with our RIC number
+  // Start copying data when the address matches with our RIC number
   if (m_state != POCSAG_IDLE) {
     for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
       m_bufferRX.put(data[i]);
 
-    io.DEB_pin(HIGH); // debug test pin
+    io.DEB_pin(HIGH); // debug pin
   }
-  else
-    io.DEB_pin(LOW); // debug test pin
+}
+
+void CPOCSAGDecoder::setIdle()
+{
+  m_state = POCSAG_IDLE;
+  io.DEB_pin(LOW); // debug pin
 }
 
 void CPOCSAGDecoder::process()
@@ -62,39 +69,51 @@ void CPOCSAGDecoder::process()
     m_words[i>>2] |= m_bufferRX.get() << 8 * (3 - (i % 4));
   }
 
-  uint16_t errors = 0U;
-  uint8_t count = 0U;
-  uint8_t func = 0U;
+  uint8_t count = 1U;
 
   while (count < POCSAG_FRAME_LENGTH_WORDS) {
     switch (m_state) {
       case POCSAG_START:
       case POCSAG_IDLE:
+        m_errors = 0U;
+
         // Check address again, extract functional bits
         count = (2U * m_frame_pos) + 1U;
-        if (checkAddress(m_words[count], func, errors)) {
+        if (checkAddress(m_words[count], m_func, m_errors)) {
           count++;
           m_state = POCSAG_MSG;
         } else {
           // Not for us, discard batch
           count = POCSAG_FRAME_LENGTH_WORDS;
-          m_state = POCSAG_IDLE;
+          m_state = POCSAG_START;
         }
         break;
       case POCSAG_MSG:
         // Check and fix errors
-        if (pocsagFEC.decode(m_words[count], errors)) {
+        if (pocsagFEC.decode(m_words[count], m_errors)) {
           // See if the codeword is a message
           if (m_words[count] & POCSAG_MSG_MASK) {
-            // Do something with the data received...
+            // TODO: do something with the data received...
             count++;
           }
           else {
-            count = POCSAG_FRAME_LENGTH_WORDS;
-            m_state = POCSAG_IDLE;
+            // Check for contiguous new msg, check address, etc
+            count = (2U * m_frame_pos) + 1U;
+            if (checkAddress(m_words[count], m_func, m_errors)) {
+              // TODO: send prev. msg to display, reset stuff for a new msg, etc...
+              count++;
+              m_state = POCSAG_MSG;
+            } else {
+              // End of the message
+              // TODO: send msg to display...
+              count = POCSAG_FRAME_LENGTH_WORDS;
+              m_state = POCSAG_START;
+              m_errors = 0U;
+            }
           }
         } else {
           // Codeword too corrupt
+          // TODO: do something...
           count++;
         }
         break;
