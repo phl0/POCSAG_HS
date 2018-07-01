@@ -29,13 +29,13 @@ CSerialPort::CSerialPort()
 void CSerialPort::start()
 {
   // Init host serial port
-  beginInt(1U, 115200);
+  begin(1U, 115200U);
 
   // Init serial port for Nextion display
-  beginInt(3U, 9600);
+  begin(3U, 9600U);
 }
 
 void CSerialPort::process()
 {
-
+  // Put code here for serial port RX
 }

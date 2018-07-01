@@ -24,7 +24,7 @@
 
 #if defined(ARDUINO)
 
-void CSerialPort::beginInt(uint8_t n, int speed)
+void CSerialPort::begin(uint8_t n, int speed)
 {
   switch (n) {
     case 1U:
@@ -35,11 +35,11 @@ void CSerialPort::beginInt(uint8_t n, int speed)
     #endif
       break;
     case 3U:
-    #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
+    #if defined(SERIAL_NEXTION) && defined(__STM32F1__)
       Serial2.begin(speed);
-    #elif defined(SERIAL_REPEATER_USART1) && defined(__STM32F1__)
+    #elif defined(SERIAL_NEXTION_USART1) && defined(__STM32F1__)
       Serial1.begin(speed);
-    #elif defined(SERIAL_REPEATER) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
+    #elif defined(SERIAL_NEXTION) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
       Serial1.begin(speed);
     #endif
       break;
@@ -48,7 +48,7 @@ void CSerialPort::beginInt(uint8_t n, int speed)
   }
 }
 
-int CSerialPort::availableInt(uint8_t n)
+int CSerialPort::available(uint8_t n)
 {
   switch (n) {
     case 1U:
@@ -58,11 +58,11 @@ int CSerialPort::availableInt(uint8_t n)
       return Serial.available();
     #endif
     case 3U:
-    #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
+    #if defined(SERIAL_NEXTION) && defined(__STM32F1__)
       return Serial2.available();
-    #elif defined(SERIAL_REPEATER_USART1) && defined(__STM32F1__)
+    #elif defined(SERIAL_NEXTION_USART1) && defined(__STM32F1__)
       return Serial1.available();
-    #elif defined(SERIAL_REPEATER) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
+    #elif defined(SERIAL_NEXTION) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
       return Serial1.available();
     #endif
     default:
@@ -70,7 +70,7 @@ int CSerialPort::availableInt(uint8_t n)
   }
 }
 
-uint8_t CSerialPort::readInt(uint8_t n)
+uint8_t CSerialPort::read(uint8_t n)
 {
   switch (n) {
     case 1U:
@@ -80,11 +80,11 @@ uint8_t CSerialPort::readInt(uint8_t n)
       return Serial.read();
     #endif
     case 3U:
-    #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
+    #if defined(SERIAL_NEXTION) && defined(__STM32F1__)
       return Serial2.read();
-    #elif defined(SERIAL_REPEATER_USART1) && defined(__STM32F1__)
+    #elif defined(SERIAL_NEXTION_USART1) && defined(__STM32F1__)
       return Serial1.read();
-    #elif defined(SERIAL_REPEATER) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
+    #elif defined(SERIAL_NEXTION) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
       return Serial1.read();
     #endif
     default:
@@ -92,7 +92,7 @@ uint8_t CSerialPort::readInt(uint8_t n)
   }
 }
 
-void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool flush)
+void CSerialPort::write(uint8_t n, const uint8_t* data, uint16_t length, bool flush)
 {
   switch (n) {
     case 1U:
@@ -105,11 +105,11 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
     #endif
       break;
     case 3U:
-    #if defined(SERIAL_REPEATER) && defined(__STM32F1__)
+    #if defined(SERIAL_NEXTION) && defined(__STM32F1__)
       Serial2.write(data, length);
-    #elif defined(SERIAL_REPEATER_USART1) && defined(__STM32F1__)
+    #elif defined(SERIAL_NEXTION_USART1) && defined(__STM32F1__)
       Serial1.write(data, length);
-    #elif defined(SERIAL_REPEATER) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
+    #elif defined(SERIAL_NEXTION) && (defined(__MK20DX256__) || defined(__MK64FX512__) || defined(__MK66FX1M0__))
       Serial1.write(data, length);
     #endif
       break;

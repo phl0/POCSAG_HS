@@ -25,10 +25,16 @@ CDisplay::CDisplay()
 
 void CDisplay::init()
 {
-  // Things to do...
+  // Call internal function to configure display
+  initInt();
 }
 
-void CDisplay::showMsg(uint8_t* data)
+void CDisplay::showMsg(uint8_t* data, uint16_t length)
 {
-  // Things to do...
+#if defined(ENABLE_DEBUG)
+  // Copy msgs to the host serial port for debugging
+  serial.write(1U, data, length);
+#endif
+  // Call internal function to show msgs on the display
+  showMsgInt(data, length);
 }

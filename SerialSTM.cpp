@@ -48,7 +48,7 @@ USART2 - TXD PA2  - RXD PA3
 #error "You have to select STM32_USART1_HOST or STM32_USB_HOST, but not both"
 #endif
 
-#if defined(STM32_USART1_HOST) || defined(SERIAL_REPEATER_USART1)
+#if defined(STM32_USART1_HOST) || defined(SERIAL_NEXTION_USART1)
 
 extern "C" {
   void USART1_IRQHandler();
@@ -239,7 +239,7 @@ void WriteUSART1(const uint8_t* data, uint16_t length)
 
 #endif
 
-#if defined(SERIAL_REPEATER)
+#if defined(SERIAL_NEXTION)
 
 extern "C" {
   void USART2_IRQHandler();
@@ -433,7 +433,7 @@ void WriteUSART2(const uint8_t* data, uint16_t length)
 
 /////////////////////////////////////////////////////////////////
 
-void CSerialPort::beginInt(uint8_t n, int speed)
+void CSerialPort::begin(uint8_t n, int speed)
 {
   switch (n) {
     case 1U:
@@ -444,9 +444,9 @@ void CSerialPort::beginInt(uint8_t n, int speed)
     #endif
       break;
     case 3U:
-    #if defined(SERIAL_REPEATER)
+    #if defined(SERIAL_NEXTION)
       InitUSART2(speed);
-    #elif defined(SERIAL_REPEATER_USART1)
+    #elif defined(SERIAL_NEXTION_USART1)
       InitUSART1(speed);
     #endif
       break;
@@ -455,7 +455,7 @@ void CSerialPort::beginInt(uint8_t n, int speed)
   }   
 }
 
-int CSerialPort::availableInt(uint8_t n)
+int CSerialPort::available(uint8_t n)
 { 
   switch (n) {
     case 1U:
@@ -465,9 +465,9 @@ int CSerialPort::availableInt(uint8_t n)
       return usbserial.available();
     #endif
     case 3U: 
-    #if defined(SERIAL_REPEATER)
+    #if defined(SERIAL_NEXTION)
       return AvailUSART2();
-    #elif defined(SERIAL_REPEATER_USART1)
+    #elif defined(SERIAL_NEXTION_USART1)
       return AvailUSART1();
     #endif
     default:
@@ -475,7 +475,7 @@ int CSerialPort::availableInt(uint8_t n)
   }
 }
 
-uint8_t CSerialPort::readInt(uint8_t n)
+uint8_t CSerialPort::read(uint8_t n)
 {   
   switch (n) {
     case 1U:
@@ -485,9 +485,9 @@ uint8_t CSerialPort::readInt(uint8_t n)
       return usbserial.read();
     #endif
     case 3U:
-    #if defined(SERIAL_REPEATER)
+    #if defined(SERIAL_NEXTION)
       return ReadUSART2();
-    #elif defined(SERIAL_REPEATER_USART1)
+    #elif defined(SERIAL_NEXTION_USART1)
       return ReadUSART1();
     #endif
     default:
@@ -495,7 +495,7 @@ uint8_t CSerialPort::readInt(uint8_t n)
   }
 }
 
-void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool flush)
+void CSerialPort::write(uint8_t n, const uint8_t* data, uint16_t length, bool flush)
 {
   switch (n) {
     case 1U:
@@ -510,11 +510,11 @@ void CSerialPort::writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool
     #endif
       break;
     case 3U:
-    #if defined(SERIAL_REPEATER)
+    #if defined(SERIAL_NEXTION)
       WriteUSART2(data, length);
       if (flush)
         TXSerialFlush2();
-    #elif defined(SERIAL_REPEATER_USART1)
+    #elif defined(SERIAL_NEXTION_USART1)
       WriteUSART1(data, length);
       if (flush)
         TXSerialFlush1();

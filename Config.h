@@ -37,6 +37,12 @@
 // Enable display support:
 #define ENABLE_NEXTION
 
+// Enable Nextion LCD serial port on USART2:
+#define SERIAL_NEXTION
+
+// Enable Nextion LCD serial port on USART1 (Do not use with STM32_USART1_HOST enabled):
+// #define SERIAL_NEXTION_USART1
+
 // TCXO of the ADF7021
 // For 14.7456 MHz:
 #define ADF7021_14_7456
@@ -53,5 +59,12 @@
 
 // Constant Service LED once repeater is running 
 // #define CONSTANT_SRV_LED
+
+// Enable modem debug messages using host serial port
+#define ENABLE_DEBUG
+
+// Host communication selection (for debug for now...):
+// #define STM32_USART1_HOST
+#define STM32_USB_HOST
 
 #endif

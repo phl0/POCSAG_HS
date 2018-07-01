@@ -29,13 +29,15 @@ public:
   void start();
 
   void process();
+  
+  // Hardware versions
+  void    begin(uint8_t n, int speed);
+  int     available(uint8_t n);
+  uint8_t read(uint8_t n);
+  void    write(uint8_t n, const uint8_t* data, uint16_t length, bool flush = false);
 
 private:  
-  // Hardware versions
-  void    beginInt(uint8_t n, int speed);
-  int     availableInt(uint8_t n);
-  uint8_t readInt(uint8_t n);
-  void    writeInt(uint8_t n, const uint8_t* data, uint16_t length, bool flush = false);
+
 };
 
 #endif
