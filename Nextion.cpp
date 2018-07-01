@@ -26,7 +26,7 @@ void CDisplay::initInt()
   // Things to do...
 }
 
-void CDisplay::showMsgInt(uint8_t* data, uint16_t length)
+void CDisplay::showMsgInt(uint8_t* data, uint16_t length, uint16_t errors)
 {
   // Things to do...
 }

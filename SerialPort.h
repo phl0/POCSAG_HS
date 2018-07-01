@@ -35,10 +35,18 @@ public:
   int     available(uint8_t n);
   uint8_t read(uint8_t n);
   void    write(uint8_t n, const uint8_t* data, uint16_t length, bool flush = false);
+  
+#if defined(ENABLE_DEBUG)
+  void    writeInt2Hex(const uint8_t* text, uint32_t n1);
+#endif
 
 private:  
 
 };
+
+#if defined(ENABLE_DEBUG)
+uint16_t uintToHexStr(uint32_t num, uint8_t* buff);
+#endif
 
 #endif
 

@@ -24,11 +24,11 @@ public:
   CDisplay();
 
   void init();
-  void showMsg(uint8_t* data, uint16_t length);
+  void showMsg(uint8_t* data, uint16_t length, uint16_t errors);
 
 private:
   void initInt();
-  void showMsgInt(uint8_t* data, uint16_t length);
+  void showMsgInt(uint8_t* data, uint16_t length, uint16_t errors);
 
 };
 

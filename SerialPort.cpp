@@ -39,3 +39,54 @@ void CSerialPort::process()
 {
   // Put code here for serial port RX
 }
+
+#if defined(ENABLE_DEBUG)
+void CSerialPort::writeInt2Hex(const uint8_t* text, uint32_t n1)
+{   
+  uint8_t reply[64U];
+
+  uint8_t count = 0U;
+  for (uint8_t i = 0U; text[i] != '\0'; i++, count++)
+    reply[count] = text[i];
+
+  reply[count++] = ' '; 
+  reply[count++] = '0'; 
+  reply[count++] = 'x'; 
+
+  uintToHexStr(n1, &reply[count]);
+
+  count += 8U;
+  reply[count++] = '\r';
+  reply[count++] = '\n';
+
+  write(1U, reply, count, true);
+}
+
+// For the next function, please see here: http://blog.refu.co/?p=804
+static uint8_t hex_data[] = { '0', '1', '2', '3', '4', '5', '6', '7',
+                              '8', '9' ,'A', 'B', 'C', 'D', 'E', 'F' };
+//The function that performs the conversion. Accepts a buffer with "enough space" TM 
+//and populates it with a string of hexadecimal digits.Returns the length in digits
+uint16_t uintToHexStr(uint32_t num, uint8_t* buff)
+{
+  uint16_t len = 0, k = 0;
+  do //for every 4 bits
+  {
+    //get the equivalent hex digit
+    buff[len] = hex_data[num & 0xF];
+    len++;
+    num >>= 4;
+  } while (len < 8);
+
+  //since we get the digits in the wrong order reverse the digits in the buffer
+  for(; k<len/2; k++)
+  {//xor swapping
+     buff[k] ^= buff[len - k - 1];
+     buff[len-k-1] ^= buff[k];
+     buff[k] ^= buff[len - k - 1];
+  }
+
+  return len;
+}
+#endif
+

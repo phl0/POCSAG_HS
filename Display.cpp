@@ -29,12 +29,13 @@ void CDisplay::init()
   initInt();
 }
 
-void CDisplay::showMsg(uint8_t* data, uint16_t length)
+void CDisplay::showMsg(uint8_t* data, uint16_t length, uint16_t errors)
 {
 #if defined(ENABLE_DEBUG)
   // Copy msgs to the host serial port for debugging
-  serial.write(1U, data, length);
+  serial.write(1U, data, length, true);
+  serial.writeInt2Hex((uint8_t*)"Total errors: ", errors);
 #endif
   // Call internal function to show msgs on the display
-  showMsgInt(data, length);
+  showMsgInt(data, length, errors);
 }
