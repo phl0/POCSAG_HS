@@ -49,6 +49,8 @@ private:
   POCSAG_RXS   m_state;
   uint8_t      m_func;
   uint16_t     m_errors;
+  int16_t      m_rssi;
+  uint8_t      m_cw;
 
 };
 

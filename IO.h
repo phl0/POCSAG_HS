@@ -91,9 +91,7 @@ public:
   void      start(void);
   void      startInt(void);
 
-#if defined(SEND_RSSI_DATA)
-  uint16_t  readRSSI(void);
-#endif
+  int16_t   readRSSI(void);
 
   // Misc functions
   void      dlybit(void);

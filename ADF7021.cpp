@@ -78,9 +78,9 @@ void Send_AD7021_control(bool doSle)
   }
 }
 
-#if defined(SEND_RSSI_DATA)
-uint16_t CIO::readRSSI()
+int16_t CIO::readRSSI()
 {
+#if defined(SEND_RSSI_DATA)
   uint32_t AD7021_RB;
   uint16_t RB_word = 0U;
   int AD7021_counter;
@@ -112,7 +112,7 @@ uint16_t CIO::readRSSI()
     dlybit();
 
     if( (AD7021_counter != 17) && (AD7021_counter != 0) )
-      RB_word |= ( (SREAD_pin() & 0x01) << (AD7021_counter-1) );
+      RB_word |= ((SREAD_pin() & 0x01) << (AD7021_counter-1));
 
     SCLK_pin(LOW);
     dlybit();
@@ -146,10 +146,11 @@ uint16_t CIO::readRSSI()
       break;
   }
 
-  return ( 130 - (RB_code + gain_corr)/2 );
-
-}
+  return -(130 - (RB_code + gain_corr)/2);
+#else
+  return 0U;
 #endif
+}
 
 void CIO::ifConf()
 {

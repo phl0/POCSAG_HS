@@ -41,6 +41,24 @@ void CSerialPort::process()
 }
 
 #if defined(ENABLE_DEBUG)
+void CSerialPort::writeNum(const uint8_t* text, int16_t n1)
+{
+  uint8_t reply[64U];
+
+  uint8_t count = 0U;
+  for (uint8_t i = 0U; text[i] != '\0'; i++, count++)
+    reply[count] = text[i];
+
+  reply[count++] = ' '; 
+
+  count += int2num(n1, &reply[count]);
+
+  reply[count++] = '\r';
+  reply[count++] = '\n';
+
+  write(1U, reply, count, true);
+}
+
 void CSerialPort::writeInt2Hex(const uint8_t* text, uint32_t n1)
 {   
   uint8_t reply[64U];
@@ -60,6 +78,40 @@ void CSerialPort::writeInt2Hex(const uint8_t* text, uint32_t n1)
   reply[count++] = '\n';
 
   write(1U, reply, count, true);
+}
+
+// Simple functions to convert from int to string
+// https://www.daniweb.com/programming/software-development/threads/11049/convert-int-to-string
+uint8_t int2num(int32_t value, uint8_t* s)
+{
+  const char *digits = "0123456789";
+  uint64_t ulvalue = value;
+  uint8_t *p = s, *q = s;
+  uint8_t temp;
+  uint8_t len = 0;
+
+  if (value < 0) {
+    *p++ = '-';
+    len++;
+    q = p;
+    ulvalue = -value;
+  }
+
+  do {
+    len++;
+    *p++ = digits[ulvalue % 10];
+    ulvalue /= 10;
+  } while (ulvalue > 0);
+
+  *p-- = '\0';
+
+  while (q < p) {
+    temp = *q;
+    *q++ = *p;
+    *p-- = temp;
+  }
+
+  return len;
 }
 
 // For the next function, please see here: http://blog.refu.co/?p=804

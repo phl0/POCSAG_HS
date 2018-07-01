@@ -55,7 +55,7 @@
 #define RIC_NUMBER 102341
 
 // Send RSSI value:
-// #define SEND_RSSI_DATA
+#define SEND_RSSI_DATA
 
 // Constant Service LED once repeater is running 
 // #define CONSTANT_SRV_LED

@@ -38,6 +38,7 @@ public:
   
 #if defined(ENABLE_DEBUG)
   void    writeInt2Hex(const uint8_t* text, uint32_t n1);
+  void    writeNum(const uint8_t* text, int16_t n1);
 #endif
 
 private:  
@@ -45,6 +46,7 @@ private:
 };
 
 #if defined(ENABLE_DEBUG)
+uint8_t  int2num(int32_t value, uint8_t* s);
 uint16_t uintToHexStr(uint32_t num, uint8_t* buff);
 #endif
 

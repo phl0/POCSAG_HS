@@ -24,7 +24,9 @@ CPOCSAGDecoder::CPOCSAGDecoder() :
 m_bufferRX(1000U),
 m_state(POCSAG_IDLE),
 m_func(0U),
-m_errors(0U)
+m_errors(0U),
+m_rssi(0U),
+m_cw(0U)
 {
   m_ric = RIC_NUMBER;
   m_address_cw = (m_ric / POCSAG_FRAME_ADDRESSES) << 13;
@@ -81,7 +83,9 @@ void CPOCSAGDecoder::process()
         count = (2U * m_frame_pos) + 1U;
         if (checkAddress(m_words[count], m_func, m_errors)) {
           count++;
+          m_cw = 0U;
           m_state = POCSAG_MSG;
+          m_rssi = io.readRSSI();
         } else {
           // Not for us, discard batch
           count = POCSAG_FRAME_LENGTH_WORDS;
@@ -94,27 +98,35 @@ void CPOCSAGDecoder::process()
           // See if the codeword is a message
           if (m_words[count] & POCSAG_MSG_MASK) {
             // TODO: do something with the data received...
+            serial.writeInt2Hex((uint8_t*)"RX: ", m_words[count]);
             count++;
+            m_cw++;
           }
           else {
             // Check for contiguous new msg, check address, etc
             count = (2U * m_frame_pos) + 1U;
             if (checkAddress(m_words[count], m_func, m_errors)) {
               // TODO: send prev. msg to display, reset stuff for a new msg, etc...
+              display.showMsg((uint8_t*)"Recv msg2:\r\n", 12U, m_cw, m_errors, m_rssi);
               count++;
+              m_cw = 0U;
               m_state = POCSAG_MSG;
+              m_rssi = io.readRSSI();
             } else {
               // End of the message
               // TODO: send msg to display...
+              display.showMsg((uint8_t*)"Recv msg1:\r\n", 12U, m_cw, m_errors, m_rssi);
               count = POCSAG_FRAME_LENGTH_WORDS;
               m_state = POCSAG_START;
-              m_errors = 0U;
             }
+            m_errors = 0U;
           }
         } else {
           // Codeword too corrupt
           // TODO: do something...
+          serial.writeInt2Hex((uint8_t*)"RX: ", 0x99999999);
           count++;
+          m_cw++;
         }
         break;
       default:
