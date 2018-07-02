@@ -18,6 +18,7 @@
 
 #include "Config.h"
 #include "Globals.h"
+#include <math.h>
 
 CDisplay::CDisplay()
 {
@@ -35,9 +36,11 @@ void CDisplay::showMsg(uint8_t* data, uint16_t length, uint8_t n_cw, uint16_t er
   // Copy msgs to the host serial port for debugging
   serial.write(1U, data, length, true);
   serial.writeNum((uint8_t*)"Total codewords:", n_cw);
-  serial.writeNum((uint8_t*)"Total errors:", errors);
+  serial.writeNum((uint8_t*)"Total bit errors:", errors);
+  serial.writeNum((uint8_t*)"BER x10 (\%):", (int32_t)round((31.25F * errors) / n_cw));
   serial.writeNum((uint8_t*)"RSSI:", rssi);
 #endif
+
   // Call internal function to show msgs on the display
   showMsgInt(data, length, n_cw, errors, rssi);
 }

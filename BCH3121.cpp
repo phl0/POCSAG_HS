@@ -137,8 +137,10 @@ bool CBCH3121::decode(uint32_t& data, uint16_t& errors)
         }
       }
 
-      if (cnt != 2U) // Decoding failed, too many errors
+      if (cnt != 2U) { // Decoding failed, too many errors
+        errors += check_parity(data) + 3U;
         return false;
+      }
 
       // Correct double error:
       data ^= (0x80000000U >> (locator[0U] - 1U));
