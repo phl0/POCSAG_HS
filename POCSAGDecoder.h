@@ -21,6 +21,8 @@
 
 #include "POCSAGDefines.h"
 
+const uint16_t MAX_CHAR_OUT = 1024U;
+
 enum POCSAG_RXS {
   POCSAG_IDLE,
   POCSAG_START,
@@ -45,7 +47,7 @@ private:
   void msgReady();
 
   CSerialRB    m_bufferRX;
-  uint8_t      m_char_out[1024];
+  uint8_t      m_char_out[MAX_CHAR_OUT];
   uint32_t     m_words[POCSAG_FRAME_LENGTH_WORDS];
   uint32_t     m_ric;
   uint8_t      m_frame_pos;

@@ -89,15 +89,12 @@ void CPOCSAGDecoder::addData(uint8_t* data)
   if (m_state != POCSAG_IDLE) {
     for (uint8_t i = 0U; i < POCSAG_FRAME_LENGTH_BYTES; i++)
       m_bufferRX.put(data[i]);
-
-    io.DEB_pin(HIGH); // debug pin
   }
 }
 
 void CPOCSAGDecoder::setIdle()
 {
   m_state = POCSAG_IDLE;
-  io.DEB_pin(LOW); // debug pin
 }
 
 void CPOCSAGDecoder::process()
@@ -130,6 +127,7 @@ void CPOCSAGDecoder::process()
           m_len = 0U;
           m_len_bit = 0U;
           m_state = POCSAG_MSG;
+          ::memset(m_char_out, 0U, MAX_CHAR_OUT);
           m_rssi = io.readRSSI();
         } else {
           // Not for us, discard batch
@@ -159,6 +157,7 @@ void CPOCSAGDecoder::process()
               m_len = 0U;
               m_len_bit = 0U;
               m_state = POCSAG_MSG;
+              ::memset(m_char_out, 0U, MAX_CHAR_OUT);
               m_rssi = io.readRSSI();
             } else {
               // End of the message
@@ -171,7 +170,7 @@ void CPOCSAGDecoder::process()
           }
         } else {
           // Codeword too corrupt
-          // Try to convert to ASCII anyway...
+          // Try to convert to ASCII anyway. TODO: find a better way to deal with this
           toASCII(m_words[count]);
           count++;
           m_cw++;
@@ -186,7 +185,7 @@ void CPOCSAGDecoder::process()
 void CPOCSAGDecoder::msgReady()
 {
   // Invert bits if the msg is alphanumeric
-  if (m_func == 3U) {
+  if (m_func == FUNCTIONAL_ALPHANUMERIC) {
     for (uint8_t k = 0U; k < m_len; k++)
       m_char_out[k] = INVBITS_TABLE[m_char_out[k]];
   }
@@ -197,14 +196,17 @@ void CPOCSAGDecoder::msgReady()
 void CPOCSAGDecoder::toASCII(uint32_t cw)
 {
   //serial.writeInt2Hex((uint8_t*)"RX: ", cw);
-  if (m_func == 0U)
+  if (m_func == FUNCTIONAL_NUMERIC)
     toNumeric(cw);
-  else if (m_func == 3U)
+  else if (m_func == FUNCTIONAL_ALPHANUMERIC)
     toAlpha(cw);
 }
 
 void CPOCSAGDecoder::toNumeric(uint32_t cw)
 {
+  if (m_len >= (MAX_CHAR_OUT - 5))
+    return;
+
   for (uint8_t k = 0; k < 5U; k++) {
     m_char_out[m_len] = BCD_TABLE[(cw >> (27 - (4 * k))) & 0x0F];
     m_len++;
@@ -213,6 +215,9 @@ void CPOCSAGDecoder::toNumeric(uint32_t cw)
 
 void CPOCSAGDecoder::toAlpha(uint32_t cw)
 {
+  if (m_len >= (MAX_CHAR_OUT - 3))
+    return;
+
   for (uint8_t k = 0U; k < 20U; k++) {
     if ((m_len_bit % 8U) == 0U) {
       WRITE_BIT1(m_char_out, m_len_bit, 0);

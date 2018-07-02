@@ -42,4 +42,7 @@ const uint32_t POCSAG_MSG_MASK  = 0x80000000U;
 const uint32_t POCSAG_ADDR_MASK = 0x7FFFE000U;
 const uint32_t POCSAG_FUNC_MASK = 0x00001800U;
 
+const uint8_t  FUNCTIONAL_NUMERIC      = 0U;
+const uint8_t  FUNCTIONAL_ALPHANUMERIC = 3U;
+
 #endif
