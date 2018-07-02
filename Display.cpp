@@ -34,7 +34,9 @@ void CDisplay::showMsg(uint8_t* data, uint16_t length, uint8_t n_cw, uint16_t er
 {
 #if defined(ENABLE_DEBUG)
   // Copy msgs to the host serial port for debugging
+  serial.write(1U, (uint8_t*)"Message received: ", 18U, true);
   serial.write(1U, data, length, true);
+  serial.write(1U, (uint8_t*)"\r\n", 2U, true);
   serial.writeNum((uint8_t*)"Total codewords:", n_cw);
   serial.writeNum((uint8_t*)"Total bit errors:", errors);
   serial.writeNum((uint8_t*)"BER x10 (\%):", (int32_t)round((31.25F * errors) / n_cw));

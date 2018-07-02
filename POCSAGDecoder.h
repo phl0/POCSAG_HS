@@ -39,8 +39,12 @@ public:
 private:
   bool checkAddress(uint8_t* data);
   bool checkAddress(uint32_t addr_cw, uint8_t& func, uint16_t& errors);
+  void toASCII(uint32_t cw);
+  void toNumeric(uint32_t cw);
+  void toAlpha(uint32_t cw);
 
   CSerialRB    m_bufferRX;
+  uint8_t      m_char_out[1024];
   uint32_t     m_words[POCSAG_FRAME_LENGTH_WORDS];
   uint32_t     m_ric;
   uint8_t      m_frame_pos;
@@ -51,6 +55,7 @@ private:
   uint16_t     m_errors;
   int16_t      m_rssi;
   uint8_t      m_cw;
+  uint16_t     m_len;
 
 };
 

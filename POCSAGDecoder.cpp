@@ -20,13 +20,16 @@
 #include "Globals.h"
 #include "Utils.h"
 
+const uint8_t BCD_TABLE[] = {'0', '8', '4', ' ', '2', 'S', '6', ')', '1', '9', '5', '-', '3', 'U', '7', '('};
+
 CPOCSAGDecoder::CPOCSAGDecoder() :
 m_bufferRX(1000U),
 m_state(POCSAG_IDLE),
 m_func(0U),
 m_errors(0U),
 m_rssi(0U),
-m_cw(0U)
+m_cw(0U),
+m_len(0U)
 {
   m_ric = RIC_NUMBER;
   m_address_cw = (m_ric / POCSAG_FRAME_ADDRESSES) << 13;
@@ -84,6 +87,7 @@ void CPOCSAGDecoder::process()
         if (checkAddress(m_words[count], m_func, m_errors)) {
           count++;
           m_cw = 1U;
+          m_len = 0U;
           m_state = POCSAG_MSG;
           m_rssi = io.readRSSI();
         } else {
@@ -97,8 +101,8 @@ void CPOCSAGDecoder::process()
         if (pocsagFEC.decode(m_words[count], m_errors)) {
           // See if the codeword is a message
           if (m_words[count] & POCSAG_MSG_MASK) {
-            // TODO: do something with the data received...
-            serial.writeInt2Hex((uint8_t*)"RX: ", m_words[count]);
+            // Convert data received to ASCII
+            toASCII(m_words[count]);
             count++;
             m_cw++;
           } else {
@@ -107,16 +111,17 @@ void CPOCSAGDecoder::process()
             if (count < addr_pos)
               count = addr_pos;
             if (checkAddress(m_words[count], m_func, m_errors)) {
-              // TODO: send prev. msg to display, reset stuff for a new msg, etc...
-              display.showMsg((uint8_t*)"Recv msg2:\r\n", 12U, m_cw, m_errors, m_rssi);
+              // Send msg to display
+              display.showMsg(m_char_out, m_len, m_cw, m_errors, m_rssi);
               count++;
               m_cw = 1U;
+              m_len = 0U;
               m_state = POCSAG_MSG;
               m_rssi = io.readRSSI();
             } else {
               // End of the message
-              // TODO: send msg to display...
-              display.showMsg((uint8_t*)"Recv msg1:\r\n", 12U, m_cw, m_errors, m_rssi);
+              // Send msg to display
+              display.showMsg(m_char_out, m_len, m_cw, m_errors, m_rssi);
               count = POCSAG_FRAME_LENGTH_WORDS;
               m_state = POCSAG_START;
             }
@@ -124,8 +129,8 @@ void CPOCSAGDecoder::process()
           }
         } else {
           // Codeword too corrupt
-          // TODO: do something...
-          serial.writeInt2Hex((uint8_t*)"RX: ", 0x99999999);
+          // Try to convert to ASCII anyway...
+          toASCII(m_words[count]);
           count++;
           m_cw++;
         }
@@ -134,6 +139,29 @@ void CPOCSAGDecoder::process()
         break;
     }
   }
+}
+
+void CPOCSAGDecoder::toASCII(uint32_t cw)
+{
+  //serial.writeInt2Hex((uint8_t*)"RX: ", cw);
+
+  if (m_func == 0U)
+    toNumeric(cw);
+  else if (m_func == 3U)
+    toAlpha(cw);
+}
+
+void CPOCSAGDecoder::toNumeric(uint32_t cw)
+{
+  for (uint8_t k=0; k<5U; k++) {
+    m_char_out[m_len] = BCD_TABLE[(cw >> (27 - (4*k))) & 0x0F];
+    m_len++;
+  }
+}
+
+void CPOCSAGDecoder::toAlpha(uint32_t cw)
+{
+
 }
 
 bool CPOCSAGDecoder::checkAddress(uint8_t* data)
