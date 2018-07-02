@@ -42,6 +42,7 @@ private:
   void toASCII(uint32_t cw);
   void toNumeric(uint32_t cw);
   void toAlpha(uint32_t cw);
+  void msgReady();
 
   CSerialRB    m_bufferRX;
   uint8_t      m_char_out[1024];
@@ -56,7 +57,7 @@ private:
   int16_t      m_rssi;
   uint8_t      m_cw;
   uint16_t     m_len;
-
+  uint16_t     m_len_bit;
 };
 
 #endif
