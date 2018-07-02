@@ -72,7 +72,6 @@ void CPOCSAGDecoder::process()
   }
 
   uint8_t count = 1U;
-  bool check_addr = true;
 
   while (count < POCSAG_FRAME_LENGTH_WORDS) {
     switch (m_state) {
@@ -102,16 +101,16 @@ void CPOCSAGDecoder::process()
             serial.writeInt2Hex((uint8_t*)"RX: ", m_words[count]);
             count++;
             m_cw++;
-          }
-          else {
+          } else {
             // Check for contiguous new msg, check address, etc
-            count = (2U * m_frame_pos) + 1U;
-            if (checkAddress(m_words[count], m_func, m_errors) && check_addr) {
+            uint16_t addr_pos = (2U * m_frame_pos) + 1U;
+            if (count < addr_pos)
+              count = addr_pos;
+            if (checkAddress(m_words[count], m_func, m_errors)) {
               // TODO: send prev. msg to display, reset stuff for a new msg, etc...
               display.showMsg((uint8_t*)"Recv msg2:\r\n", 12U, m_cw, m_errors, m_rssi);
               count++;
               m_cw = 1U;
-              check_addr = false;
               m_state = POCSAG_MSG;
               m_rssi = io.readRSSI();
             } else {
