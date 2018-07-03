@@ -22,7 +22,6 @@ POCSAG_HS_PATH=.
 F1_LIB_PATH=./STM32F10X_Lib
 
 # MCU external clock frequency (Hz)
-CLK_PI_F4=12000000
 CLK_DEF=8000000
 
 # Directory Structure
@@ -110,11 +109,7 @@ endif
 
 # Default reference oscillator frequencies
 ifndef $(OSC)
-	ifeq ($(MAKECMDGOALS),pi-f4)
-		OSC=$(CLK_PI_F4)
-	else
-		OSC=$(CLK_DEF)
-	endif
+	OSC=$(CLK_DEF)
 endif
 
 # Build object lists
@@ -148,7 +143,7 @@ CXXFLAGS=-Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-
 LDFLAGS=-Os --specs=nano.specs --specs=nosys.specs
 
 # Build Rules
-.PHONY: all release_f1 hs bl pi-f4 clean
+.PHONY: all release_f1 hs bl clean
 
 all: hs
 
