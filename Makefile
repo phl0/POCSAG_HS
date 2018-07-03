@@ -148,7 +148,7 @@ CXXFLAGS=-Os -fno-exceptions -ffunction-sections -fdata-sections -nostdlib -fno-
 LDFLAGS=-Os --specs=nano.specs --specs=nosys.specs
 
 # Build Rules
-.PHONY: all release_f1 release_f4 release_f7 hs bl pi-f4 f446 f767 clean
+.PHONY: all release_f1 hs bl pi-f4 clean
 
 all: hs
 
