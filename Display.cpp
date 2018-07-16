@@ -30,6 +30,17 @@ void CDisplay::init()
   initInt();
 }
 
+void CDisplay::setDcd(bool dcd)
+{
+#if defined(ENABLE_DEBUG)
+  // Show DCD on host serial port for debugging purposes
+  if (dcd) {
+    serial.write(1U, (uint8_t*)"Carrier detected!\r\n", 19U, true);
+  }
+#endif
+  setDcdInt(dcd);
+}
+
 void CDisplay::showMsg(uint8_t* data, uint16_t length, uint8_t n_cw, uint16_t errors, int16_t rssi)
 {
 #if defined(ENABLE_DEBUG)

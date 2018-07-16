@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 by Andy Uribe CA6JAU
+ *   Copyright (C) 2018 by Florian Wolters DF2ET
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,21 +16,16 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if !defined(DISPLAY_H)
-#define  DISPLAY_H
+#if !defined(NEXTION_H)
+#define  NEXTION_H
 
-class CDisplay {
+class CNextion {
 public:
-  CDisplay();
+  CNextion();
 
-  void init();
-  void setDcd(bool dcd);
-  void showMsg(uint8_t* data, uint16_t length, uint8_t n_cw, uint16_t errors, int16_t rssi);
+  void sendCommand(const char* command);
 
 private:
-  void initInt();
-  void setDcdInt(bool dcd);
-  void showMsgInt(uint8_t* data, uint16_t length, uint8_t n_cw, uint16_t errors, int16_t rssi);
 
 };
 

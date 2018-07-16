@@ -182,7 +182,13 @@ uint8_t CIO::setFreq(uint32_t frequency_rx, uint32_t frequency_tx, uint8_t rf_po
 void CIO::setDecode(bool dcd)
 {
   if (dcd != m_dcd) {
-    COS_pin(dcd ? true : false);
+    if (dcd) {
+      COS_pin(true);
+      display.setDcd(true);
+    } else {
+      COS_pin(false);
+      display.setDcd(false);
+    }
   }
 
   m_dcd = dcd;

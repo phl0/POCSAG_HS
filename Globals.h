@@ -40,6 +40,7 @@
 #include "POCSAGEncoder.h"
 #include "SerialPort.h"
 #include "Display.h"
+#include "Nextion.h"
 
 const uint16_t TX_RINGBUFFER_SIZE = 1024U;
 const uint16_t RX_RINGBUFFER_SIZE = 1024U;
@@ -52,6 +53,8 @@ extern CIO io;
 extern CSerialPort serial;
 
 extern CDisplay display;
+
+extern CNextion nextion;
 
 extern CPOCSAGRX pocsagRX;
 extern CPOCSAGTX pocsagTX;
