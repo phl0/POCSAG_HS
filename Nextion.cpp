@@ -22,38 +22,32 @@
 
 #if defined(ENABLE_NEXTION)
 
-CNextion::CNextion()
+void sendNextionCommand(const char* command)
 {
+  serial.write(3U, (uint8_t*)command, (unsigned int)::strlen(command));
+  serial.write(3U, (uint8_t*)"\xFF\xFF\xFF", 3U, true);
 }
 
 void CDisplay::initInt()
 {
   // Things to do...
-  nextion.sendCommand("bkcmd=0");
-  nextion.sendCommand("page IDLE");
-  nextion.sendCommand("t0.txt=\"DF2ET / 2024112\"");
-  //uint8_t ric = RIC_NUMBER;
+  sendNextionCommand("bkcmd=0");
+  sendNextionCommand("page IDLE");
+  sendNextionCommand("t0.txt=\"DF2ET / 2024112\"");
 }
 
 void CDisplay::setDcdInt(bool dcd)
 {
   if (dcd) {
-    nextion.sendCommand("p1.pic=2");
+    sendNextionCommand("p1.pic=2");
   } else {
-    nextion.sendCommand("p1.pic=1");
+    sendNextionCommand("p1.pic=1");
   }
 }
 
 void CDisplay::showMsgInt(uint8_t* data, uint16_t length, uint8_t n_cw, uint16_t errors, int16_t rssi)
 {
   // Things to do...
-}
-
-void CNextion::sendCommand(const char* command)
-{
-  serial.write(3U, (uint8_t*)command, (unsigned int)::strlen(command));
-  serial.write(3U, (uint8_t*)"\xFF\xFF\xFF", 3U, true);
-
 }
 
 #endif

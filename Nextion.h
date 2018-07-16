@@ -19,14 +19,12 @@
 #if !defined(NEXTION_H)
 #define  NEXTION_H
 
-class CNextion {
-public:
-  CNextion();
+#include "Config.h"
 
-  void sendCommand(const char* command);
+#if defined(ENABLE_NEXTION)
 
-private:
+void sendNextionCommand(const char* command);
 
-};
+#endif
 
 #endif

@@ -43,8 +43,6 @@ CSerialPort serial;
 
 CDisplay display;
 
-CNextion nextion;
-
 void setup()
 {
   io.start();
