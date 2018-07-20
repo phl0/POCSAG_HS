@@ -49,6 +49,16 @@
 // For 12.2880 MHz:
 #define ADF7021_12_2880
 
+// Configure receiver gain for ADF7021
+// AGC automatic, default settings:
+#define AD7021_GAIN_AUTO
+// AGC automatic with high LNA linearity:
+// #define AD7021_GAIN_AUTO_LIN
+// AGC OFF, lowest gain: 
+// #define AD7021_GAIN_LOW
+// AGC OFF, highest gain:
+// #define AD7021_GAIN_HIGH
+
 // POCSAG configuration
 #define FREQ_RX    434600000
 #define FREQ_TX    434600000
