@@ -64,7 +64,7 @@
 #define ENABLE_DEBUG
 
 // Host communication selection (for debug for now...):
-#define STM32_USART1_HOST
-// #define STM32_USB_HOST
+// #define STM32_USART1_HOST
+#define STM32_USB_HOST
 
 #endif
